@@ -4,7 +4,10 @@ from rdioapi import Rdio
 from pprint import pprint
 
 app = Flask(__name__)
-api = None
+rdio_key = os.environ.get('RDIO_API_KEY')
+rdio_secret = os.environ.get('RDIO_API_SECRET')
+state = {}
+api = Rdio(rdio_key, rdio_secret, state)
 
 @app.route('/')
 def index():
@@ -23,9 +26,6 @@ def get_following():
 
 @app.route('/api/get')
 def get():
-  print 'running get...'
-  print 'api is '
-  pprint(api)
   keys = request.args.get('keys')
   extras = request.args.get('extras')
   response = api.get(keys=keys, extras=extras)
@@ -33,9 +33,5 @@ def get():
 
 if __name__ == '__main__':
   port = int(os.environ.get('PORT', 5000))
-  rdio_key = os.environ.get('RDIO_API_KEY')
-  rdio_secret = os.environ.get('RDIO_API_SECRET')
-  state = {}
-  api = Rdio(rdio_key, rdio_secret, state)
-  app.debug = True
+  #app.debug = True
   app.run(host='0.0.0.0', port=port)
