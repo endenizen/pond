@@ -23,6 +23,9 @@ def get_following():
 
 @app.route('/api/get')
 def get():
+  print 'running get...'
+  print 'api is '
+  pprint(api)
   keys = request.args.get('keys')
   extras = request.args.get('extras')
   response = api.get(keys=keys, extras=extras)
