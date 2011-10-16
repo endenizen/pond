@@ -10,17 +10,29 @@ api = None
 def index():
   return open('index.html').read()
 
-@app.route('/api/getUser')
-def get_user():
-  key = request.args.get('key')
-  response = api.get(keys=key)
-  return jsonify(response[key])
+@app.route('/api/following')
+def get_following():
+  user = request.args.get('user')
+
+  # get up to 300 friends
+  friends = api.call('userFollowing', user=user, count=10, extras='-*,key')
+  response = {
+    'friends': friends
+  }
+  return jsonify(response)
+
+@app.route('/api/get')
+def get():
+  keys = request.args.get('keys')
+  extras = request.args.get('extras')
+  response = api.get(keys=keys, extras=extras)
+  return jsonify(response)
 
 if __name__ == '__main__':
-  print 'starting'
   port = int(os.environ.get('PORT', 5000))
   rdio_key = os.environ.get('RDIO_API_KEY')
   rdio_secret = os.environ.get('RDIO_API_SECRET')
   state = {}
   api = Rdio(rdio_key, rdio_secret, state)
+  app.debug = True
   app.run(host='0.0.0.0', port=port)
