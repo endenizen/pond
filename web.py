@@ -34,5 +34,5 @@ if __name__ == '__main__':
   rdio_secret = os.environ.get('RDIO_API_SECRET')
   state = {}
   api = Rdio(rdio_key, rdio_secret, state)
-  #app.debug = True
+  app.debug = True
   app.run(host='0.0.0.0', port=port)
