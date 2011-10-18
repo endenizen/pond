@@ -187,9 +187,9 @@
 
     // we now have all the required nodes in the node data, now add the proper links
     for(i in self.users) {
-      for(j in self.users[i].friends) {
-        self.connect(i, self.users[i].friends[j].key, 1);
-      }
+      //for(j in self.users[i].friends) {
+      //  self.connect(i, self.users[i].friends[j].key, 1);
+      //}
       for(j in self.users[i].history) {
         self.connect(i, j, 2);
       }
@@ -261,7 +261,7 @@
     var node = self.vis.selectAll('g.node')
       .data(self.data.nodes);
 
-    node.enter().append('svg:g')
+    var group = node.enter().append('svg:g')
       .attr("class", "node")
       .attr("cx", function(d) { return d.x; })
       .attr("cy", function(d) { return d.y; })
@@ -272,7 +272,7 @@
     //  .attr('width', '10px')
     //  .attr('height', '10px');
 
-    node.append('svg:image')
+    group.append('svg:image')
       .attr('class', 'circle')
       .attr('xlink:href', function(d) { return d.icon; })
       .attr('x', function(d) { return d.group == 1 ? '-10px' : '-5px';})
@@ -280,14 +280,14 @@
       .attr('width', function(d) { return d.group == 1 ? '20px' : '10px';})
       .attr('height', function(d) { return d.group == 1 ? '20px' : '10px';});
 
-    node.append('svg:text')
+    group.append('svg:text')
       .attr('class', 'nodetext')
       .attr('dx', 12)
       .attr('dy', '.35em')
       .text();
       //.text(function(d) { return d.name; });
     
-    node.append('svg:title')
+    group.append('svg:title')
       .text(function(d) { return d.name; });
 
     node.exit().remove();

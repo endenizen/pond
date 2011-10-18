@@ -18,7 +18,7 @@ def get_following():
   user = request.args.get('user')
 
   # get up to 300 friends
-  friends = api.call('userFollowing', user=user, count=10, extras='-*,key')
+  friends = api.call('userFollowing', user=user, count=300, extras='-*,key')
   response = {
     'friends': friends
   }
@@ -33,5 +33,5 @@ def get():
 
 if __name__ == '__main__':
   port = int(os.environ.get('PORT', 5000))
-  #app.debug = True
+  app.debug = True
   app.run(host='0.0.0.0', port=port)
