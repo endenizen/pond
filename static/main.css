@@ -1,6 +1,27 @@
 body {
-  /*background: black;
-  color: white;*/
+  font-family: courier new;
+  background: black;
+  color: white;
+  margin: 0;
+}
+
+#info {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  padding: 0 0 5px 5px;
+}
+
+#user {
+  position: fixed;
+  top: 48%;
+  left: 40%;
+  border: 0;
+  background: #ccc;
+  color: #000;
+  font-size: 25px;
+  text-align: center;
+  width: 200px;
 }
 
 circle.node {
@@ -9,11 +30,12 @@ circle.node {
 }
 
 line.link {
-  stroke: #999;
-  stroke-opacity: .6;
+  stroke: #fff;
+  stroke-opacity: .4;
 }
 
 text.nodetext {
   font-family: sans-serif;
   font-size: 10px;
+  color: #fff;
 }

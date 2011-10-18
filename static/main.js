@@ -14,14 +14,18 @@
       nodes: [],
       links: []
     };
+
     this.nodeLookup = {};
     this.linkLookup = {};
     this.appDiv = $('#app');
     this.chartDiv = null;
 
-    this.expandTime = 2000;
+    this.expandTime = 100;
 
     this.vis = null;
+
+    this.width = 100;
+    this.height = 100;
   }
 
   App.prototype.log = function() {
@@ -193,26 +197,24 @@
   };
 
   App.prototype.initVis = function() {
-    var self = this,
-      w = 2000,
-      h = 1500;
+    var self = this;
 
     self.chartDiv = $('<div id="chart"></div>').appendTo(self.appDiv);
 
     self.vis = d3.select('#chart').append('svg:svg')
-      .attr('width', w)
-      .attr('height', h);
+      .attr('width', self.width)
+      .attr('height', self.height);
 
     self.makeData();
 
     self.force = d3.layout.force()
       .linkDistance(function(d) {
-        return 200;
+        return 20;
       })
       .charge(-120)
       .nodes([])
       .links([])
-      .size([w, h]);
+      .size([self.width, self.height]);
 
     self.force.on('tick', function() {
       self.vis.selectAll('line.link')
@@ -257,28 +259,35 @@
     link.exit().remove();
 
     var node = self.vis.selectAll('g.node')
-        .data(self.data.nodes);
+      .data(self.data.nodes);
 
     node.enter().append('svg:g')
       .attr("class", "node")
       .attr("cx", function(d) { return d.x; })
       .attr("cy", function(d) { return d.y; })
-      .attr("r", 500)
-      .style("fill", function(d) { return fill(d.group); })
+      .attr("r", 10)
       .call(self.force.drag);
+
+    //node.append('svg:circle')
+    //  .attr('width', '10px')
+    //  .attr('height', '10px');
 
     node.append('svg:image')
       .attr('class', 'circle')
       .attr('xlink:href', function(d) { return d.icon; })
-      .attr('x', function(d) { return d.group == 1 ? '-50px' : '-25px';})
-      .attr('y', function(d) { return d.group == 1 ? '-50px' : '-25px';})
-      .attr('width', function(d) { return d.group == 1 ? '100px' : '50px';})
-      .attr('height', function(d) { return d.group == 1 ? '100px' : '50px';});
+      .attr('x', function(d) { return d.group == 1 ? '-10px' : '-5px';})
+      .attr('y', function(d) { return d.group == 1 ? '-10px' : '-5px';})
+      .attr('width', function(d) { return d.group == 1 ? '20px' : '10px';})
+      .attr('height', function(d) { return d.group == 1 ? '20px' : '10px';});
 
     node.append('svg:text')
       .attr('class', 'nodetext')
       .attr('dx', 12)
       .attr('dy', '.35em')
+      .text();
+      //.text(function(d) { return d.name; });
+    
+    node.append('svg:title')
       .text(function(d) { return d.name; });
 
     node.exit().remove();
@@ -337,22 +346,76 @@
     
   };
 
-  App.prototype.init = function() {
+  // triggered when size is changed, need to refresh all elements that have a width/height
+  App.prototype.redraw = function() {
     var self = this;
-    var userKey = 's233';
 
-    self.initVis();
+    self.appDiv.width(self.width);
+    self.appDiv.height(self.height);
 
+    self.appDiv.find('#chart').width(self.width);
+    self.appDiv.find('#chart').height(self.height);
+
+    self.vis.attr('width', self.width);
+    self.vis.attr('height', self.height);
+
+    self.force.size([self.width, self.height]);
+
+    self.force.resume();
+  };
+
+  App.prototype.updateUsers = function() {
+    var self = this,
+      newQueue = [],
+      i;
+
+    self.log('Updating users');
+
+    for(i = 0; i < self.userArray.length; i++) {
+      self.userQueue.push(self.userArray[i].key);
+      self.nextExpand();
+    }
+  };
+
+  App.prototype.init = function(userKey) {
+    var self = this;
+
+    // get user first in case user doesn't exist
     self.getUsers(userKey, function() {
       var user = self.users[userKey];
-      self.appDiv.append('<div>' + user.firstName + '</div>');
-      self.doVis();
-      self.nextExpand();
+      if(!user) {
+        // reset
+        $('input#user').fadeIn();
+        $('#info').fadeIn();
+      } else {
+        $(window).resize(function() {
+          self.width = $(window).width();
+          self.height = $(window).height();
+
+          self.redraw();
+        });
+
+        self.initVis();
+        $(window).resize();
+        self.doVis();
+        self.nextExpand();
+      }
     });
+
+    window.setInterval(function() {
+      self.updateUsers();
+    }, 30000);
   };
 
   $(document).ready(function() {
     var app = new App();
-    app.init();
+
+    $('input#user').keypress(function(e) {
+      if(e.which == 13) {
+        $(this).fadeOut();
+        $('#info').fadeOut();
+        app.init($(this).val());
+      }
+    }).focus();
   });
 })(jQuery)
