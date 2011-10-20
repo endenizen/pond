@@ -13,13 +13,19 @@ api = Rdio(rdio_key, rdio_secret, state)
 def index():
   return open('index.html').read()
 
-@app.route('/api/following')
-def get_following():
-  user = request.args.get('user')
+@app.route('/api/get_user')
+def get_user():
+  vanity_name = request.args.get('username')
+  user = api.call('findUser', vanityName=vanity_name, extras='-*,key,firstName,lastName,lastSongPlayed,lastSongPlayTime,icon')
 
-  # get up to 300 friends
-  friends = api.call('userFollowing', user=user, count=300, extras='-*,key')
+  friends = []
+
+  if user:
+    # get up to 300 friends
+    friends = api.call('userFollowing', user=user['key'], count=300, extras='-*,key')
+
   response = {
+    'user': user,
     'friends': friends
   }
   return jsonify(response)
