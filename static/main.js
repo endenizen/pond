@@ -77,8 +77,9 @@ App.prototype.ingestUser = function(user) {
   var lastSong = user.lastSongPlayed;
   if(lastSong && 'albumKey' in lastSong && user.lastSongPlayTime) {
     var albumKey = lastSong.albumKey;
+    var parsedDate = Date.parse(user.lastSongPlayTime.substring(0,19) + 'Z');
     // add to user's history
-    self.users[key].history[albumKey] = Date.parse(user.lastSongPlayTime);
+    self.users[key].history[albumKey] = parsedDate;
 
     if(!(albumKey in self.albums)) {
       self.albumQueue.push(albumKey);
@@ -188,8 +189,7 @@ App.prototype.updateGraph = function(forceDraw) {
 
   self.log('updating graph');
 
-  // TODO there's probably a better way to do this?
-  self.curDate = Date.parse(new Date());
+  self.curDate = (new Date()).valueOf();
 
   // starting index for next node insertion
   nodeIndex = self.data.nodes.length;
