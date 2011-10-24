@@ -276,7 +276,7 @@ App.prototype.calculateDistance = function(minsAgo) {
 App.prototype.calculateTime = function(userKey, albumKey) {
   var self = this,
     timeAgo = self.curDate - self.users[userKey].history[albumKey],
-    minsAgo = timeAgo / 1000 / 60 / 60;
+    minsAgo = timeAgo / 1000 / 60;
 
   return minsAgo;
 };
