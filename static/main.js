@@ -335,7 +335,6 @@ App.prototype.doVis = function() {
 
   link.enter().insert("svg:line")
     .attr("class", "link")
-    //.style("stroke-width", function(d) { return Math.sqrt(d.value); })
     .attr('r', 20)
     .attr("x1", function(d) { return d.source.x; })
     .attr("y1", function(d) { return d.source.y; })
@@ -354,10 +353,6 @@ App.prototype.doVis = function() {
     .attr("r", 10)
     .call(self.force.drag);
 
-  //node.append('svg:circle')
-  //  .attr('width', '10px')
-  //  .attr('height', '10px');
-
   group.append('svg:image')
     .attr('class', 'circle')
     .attr('xlink:href', function(d) { return d.icon; })
@@ -365,12 +360,6 @@ App.prototype.doVis = function() {
     .attr('y', function(d) { return d.group == 1 ? '-10px' : '-5px';})
     .attr('width', function(d) { return d.group == 1 ? '20px' : '10px';})
     .attr('height', function(d) { return d.group == 1 ? '20px' : '10px';});
-
-  //group.append('svg:text')
-  //  .attr('class', 'nodetext')
-  //  .attr('dx', 12)
-  //  .attr('dy', '.35em');
-  //  .text(function(d) { return d.name; });
   
   group.append('svg:title')
     .text(function(d) { return d.name; });
@@ -439,8 +428,9 @@ App.prototype.updateUsers = function() {
 
   for(i = 0; i < self.userArray.length; i++) {
     self.userQueue.push(self.userArray[i].key);
-    self.nextExpand();
   }
+
+  self.nextExpand();
 };
 
 App.prototype.init = function(username) {
