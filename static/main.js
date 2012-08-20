@@ -488,11 +488,19 @@ var app;
 $(document).ready(function() {
   app = new App();
 
-  $('input#user').keypress(function(e) {
-    if(e.which == 13) {
-      $(this).fadeOut();
-      $('#info').fadeOut();
-      app.init($(this).val());
-    }
-  }).focus();
+  var hash = window.location.hash;
+  if (hash) {
+    hash = hash.substring(1);
+    $('input#user').hide();
+    $('#info').hide();
+    app.init(hash);
+  } else {
+    $('input#user').keypress(function(e) {
+      if(e.which == 13) {
+        $(this).fadeOut();
+        $('#info').fadeOut();
+        app.init($(this).val());
+      }
+    }).focus();
+  }
 });
